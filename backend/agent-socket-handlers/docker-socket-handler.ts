@@ -232,29 +232,7 @@ export class DockerSocketHandler extends AgentSocketHandler {
                 await stack.update(socket);
                 callbackResult({
                     ok: true,
-                    msg: "Updated",
-                    msgi18n: true,
-                }, callback);
-                server.sendStackList();
-            } catch (e) {
-                callbackError(e, callback);
-            }
-        });
-
-        // gitSync
-        agentSocket.on("gitSync", async (stackName : unknown, callback) => {
-            try {
-                checkLogin(socket);
-
-                if (typeof(stackName) !== "string") {
-                    throw new ValidationError("Stack name must be a string");
-                }
-
-                const stack = await Stack.getStack(server, stackName);
-                await stack.gitSync(socket);
-                callbackResult({
-                    ok: true,
-                    msg: "Synced"
+                    msg: `Updated: ${stackName}`
                 }, callback);
                 server.sendStackList();
             } catch (e) {
