@@ -68,6 +68,47 @@ export class DockerSocketHandler extends AgentSocketHandler {
             }
         });
 
+        agentSocket.on("gitDeployStack", async (stackName : unknown, gitUrl : unknown, branch : unknown, isAdd : unknown, callback) => {
+            try {
+                checkLogin(socket);
+
+                if (typeof(stackName) !== "string") {
+                    throw new ValidationError("Stack name must be a string");
+                }
+                if (typeof(gitUrl) !== "string") {
+                    throw new ValidationError("Git URL must be a string");
+                }
+                if (typeof(branch) !== "string") {
+                    throw new ValidationError("Git Ref must be a string");
+                }
+
+                const terminalName = getComposeTerminalName(socket.endpoint, stackName);
+
+                // TODO: this could be done smarter.
+                if (!isAdd) {
+                    const stack = await Stack.getStack(server, stackName);
+                    await stack.delete(socket);
+                }
+
+                let exitCode = await Terminal.exec(server, socket, terminalName, "git", [ "clone", "-b", branch, gitUrl, stackName ], server.stacksDir);
+                if (exitCode !== 0) {
+                    throw new Error(`Failed to clone git repo [Exit Code ${exitCode}]`);
+                }
+
+                const stack = await Stack.getStack(server, stackName);
+                await stack.deploy(socket);
+
+                server.sendStackList();
+                callbackResult({
+                    ok: true,
+                    msg: "Deployed"
+                }, callback);
+                stack.joinCombinedTerminal(socket);
+            } catch (e) {
+                callbackError(e, callback);
+            }
+        });
+
         agentSocket.on("saveStack", async (name : unknown, composeYAML : unknown, composeENV : unknown, isAdd : unknown, callback) => {
             try {
                 checkLogin(socket);
@@ -233,6 +274,27 @@ export class DockerSocketHandler extends AgentSocketHandler {
                 callbackResult({
                     ok: true,
                     msg: `Updated: ${stackName}`
+                }, callback);
+                server.sendStackList();
+            } catch (e) {
+                callbackError(e, callback);
+            }
+        });
+
+        // gitSync
+        agentSocket.on("gitSync", async (stackName : unknown, callback) => {
+            try {
+                checkLogin(socket);
+
+                if (typeof(stackName) !== "string") {
+                    throw new ValidationError("Stack name must be a string");
+                }
+
+                const stack = await Stack.getStack(server, stackName);
+                await stack.gitSync(socket);
+                callbackResult({
+                    ok: true,
+                    msg: "Synced"
                 }, callback);
                 server.sendStackList();
             } catch (e) {
