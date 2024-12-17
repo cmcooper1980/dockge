@@ -216,7 +216,23 @@
                         </div>
                     </div>
 
-                    <button v-if="false && isEditMode && !stack.isGitRepo && jsonConfig.services && Object.keys(jsonConfig.services).length > 0" class="btn btn-normal mb-3" @click="addContainer">{{ $t("addContainer") }}</button>
+                    <div ref="containerList">
+                        <Container
+                            v-for="(service, name) in jsonConfig.services"
+                            :key="name"
+                            :name="name"
+                            :is-edit-mode="isEditMode"
+                            :first="name === Object.keys(jsonConfig.services)[0]"
+                            :status="serviceStatusList[name]"
+                            :processing="processing"
+                            @start-service="startService"
+                            @stop-service="stopService"
+                            @restart-service="restartService"
+                        />
+                    </div>
+
+                    <button v-if="false && isEditMode && jsonConfig.services && Object.keys(jsonConfig.services).length > 0" class="btn btn-normal mb-3" @click="addContainer">{{ $t("addContainer") }}</button>
+
                     <!-- General -->
                     <div v-if="isEditMode && !stack.isGitRepo">
                         <h4 class="mb-3">{{ $t("extra") }}</h4>
@@ -892,19 +908,44 @@ export default {
             this.stack.name = this.stack?.name?.toLowerCase();
         },
 
-        async copyWebhookToClipboard() {
-            try {
-                await navigator.clipboard.writeText(this.stack.webhook);
-            } catch (err) {
-                this.$root.toastError("Failed to copy to clipboard");
-            }
-            this.$root.toastSuccess("Copied to clipboard");
+        startService(serviceName) {
+            this.processing = true;
+
+            this.$root.emitAgent(this.endpoint, "startService", this.stack.name, serviceName, (res) => {
+                this.processing = false;
+                this.$root.toastRes(res);
+
+                if (res.ok) {
+                    this.requestServiceStatus(); // Refresh service status
+                }
+            });
         },
 
-        selectText(event) {
-            event.target.select();
+        stopService(serviceName) {
+            this.processing = true;
+
+            this.$root.emitAgent(this.endpoint, "stopService", this.stack.name, serviceName, (res) => {
+                this.processing = false;
+                this.$root.toastRes(res);
+
+                if (res.ok) {
+                    this.requestServiceStatus(); // Refresh service status
+                }
+            });
         },
 
+        restartService(serviceName) {
+            this.processing = true;
+
+            this.$root.emitAgent(this.endpoint, "restartService", this.stack.name, serviceName, (res) => {
+                this.processing = false;
+                this.$root.toastRes(res);
+
+                if (res.ok) {
+                    this.requestServiceStatus(); // Refresh service status
+                }
+            });
+        },
     }
 };
 </script>
