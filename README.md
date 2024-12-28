@@ -31,6 +31,8 @@ View Video: https://youtu.be/AWAlOQeNpgU?t=48
 ![](https://github.com/louislam/dockge/assets/1336778/89fc1023-b069-42c0-a01c-918c495f1a6a)
 
 ## ⭐ Pull Requests Merged:
+
+- PR #83:  Allow specifying which user the stack files should belong to (by https://github.com/RichyHBM)
 - PR #414: Set/Update Friendly Name (by https://github.com/lohrbini)
 - PR #438: Docker Compose Pull Skip Local Images (by https://github.com/vladaurosh)
 - PR #575: Theme Options Enabled in Settings (by https://github.com/CampaniaGuy)
