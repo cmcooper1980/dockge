@@ -33,7 +33,8 @@ COPY --from=build_nodemodules /app/node_modules /app/node_modules
 COPY --chown=node:node . .
 RUN rm -rf ./data
 RUN mkdir ./data
-
+RUN apt update && apt -y upgrade && apt -y install git --no-install-recommends
+RUN apt -y autoremove && apt -y autoclean
 
 # It is just for safe, as by default, it is disabled in the latest Node.js now.
 # Read more:
