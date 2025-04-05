@@ -135,6 +135,6 @@
     "memory": "Memory",
     "memoryAbbreviated": "Mem",
     "networkIO": "Network I/O",
-    "blockIO": "Block I/O"
+    "blockIO": "Block I/O",
     "updateAll": "Update All"
 }
