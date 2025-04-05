@@ -6,7 +6,7 @@ FROM cmcooper1980/dockge:build-healthcheck AS build_healthcheck
 ############################################
 # Build frontend
 ############################################
-FROM cmcooper1980/dockge:base AS build
+FROM cmcooper1980/dockge:base AS build_frontend
 WORKDIR /app
 COPY --chown=node:node . .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
