@@ -211,6 +211,7 @@ export default defineComponent({
         },
         dockerStats: {
             type: Object,
+	    default: null,
         },
         ports: {
             type: Array,
