@@ -137,5 +137,6 @@
     "memoryAbbreviated": "Mem",
     "networkIO": "Network I/O",
     "blockIO": "Block I/O",
-    "updateAll": "Update All"
+    "updateAll": "Update All",
+    "GlobalEnv": "Global .env"
 }
