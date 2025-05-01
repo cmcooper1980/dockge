@@ -12,6 +12,14 @@ A fancy, easy-to-use and reactive self-hosted docker compose stack-oriented mana
 
 View Video: https://youtu.be/AWAlOQeNpgU?t=48
 
+# Available Architectures
+
+| Docker Tag | Architecture     |
+|------------|------------------|
+| arm64      | arm64            |
+| latest     | x86-64          |
+
+
 ## ⭐ Features
 
 - 🧑‍💼 Manage your `compose.yaml` files
