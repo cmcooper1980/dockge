@@ -235,7 +235,7 @@
             </div>
 
             <!-- Delete Dialog -->
-            <BModal v-model="showDeleteDialog" :okTitle="$t('deleteStack')" okVariant="danger" @ok="deleteDialog">
+            <BModal v-model="showDeleteDialog" :cancelTitle="$t('cancel')" :okTitle="$t('deleteStack')" okVariant="danger" @ok="deleteDialog">
                 {{ $t("deleteStackMsg") }}
                 <div class="form-check mt-4">
                     <label><input v-model="deleteStackFiles" class="form-check-input" type="checkbox" />{{
@@ -541,7 +541,7 @@ export default {
 
         exitConfirm(next) {
             if (this.isEditMode) {
-                if (confirm("You are currently editing a stack. Are you sure you want to leave?")) {
+                if (confirm(this.$t("confirmLeaveStack"))) {
                     this.exitAction();
                     next();
                 } else {
