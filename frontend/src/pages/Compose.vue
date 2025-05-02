@@ -55,10 +55,13 @@
                 </div>
 
                 <button v-if="isEditMode && !isAdd" class="btn btn-normal" :disabled="processing" @click="discardStack">{{ $t("discardStack") }}</button>
-
-                <button v-if="!isEditMode" class="btn btn-danger" :disabled="processing" @click="showDeleteDialog = !showDeleteDialog">
+                <button v-if="!isEditMode && !errorDelete" class="btn btn-danger" :disabled="processing" @click="showDeleteDialog = !showDeleteDialog">
                     <font-awesome-icon icon="trash" class="me-1" />
                     {{ $t("deleteStack") }}
+                </button>
+                <button v-if="errorDelete" class="btn btn-danger" :disabled="processing" @click="showForceDeleteDialog = !showForceDeleteDialog">
+                    <font-awesome-icon icon="trash" class="me-1" />
+                    {{ $t("forceDeleteStack") }}
                 </button>
             </div>
 
@@ -242,6 +245,11 @@
                         $t("deleteStackFilesConfirmation") }}</label>
                 </div>
             </BModal>
+
+            <!-- Force Delete Dialog -->
+            <BModal v-model="showForceDeleteDialog" :okTitle="$t('forceDeleteStack')" okVariant="danger" @ok="forceDeleteDialog">
+                {{ $t("forceDeleteStackMsg") }}
+            </BModal>
         </div>
     </transition>
 </template>
@@ -319,9 +327,11 @@ export default {
             serviceStatusList: {},
             dockerStats: {},
             isEditMode: false,
+            errorDelete: false,
             submitted: false,
             showDeleteDialog: false,
             deleteStackFiles: false,
+            showForceDeleteDialog: false,
             newContainerName: "",
             stopServiceStatusTimeout: false,
             stopDockerStatsTimeout: false,
@@ -687,6 +697,17 @@ export default {
 
         deleteDialog() {
             this.$root.emitAgent(this.endpoint, "deleteStack", this.stack.name, { deleteStackFiles: this.deleteStackFiles }, (res) => {
+                this.$root.toastRes(res);
+                if (res.ok) {
+                    this.$router.push("/");
+                } else {
+                    this.errorDelete = true;
+                }
+            });
+        },
+
+        forceDeleteDialog() {
+            this.$root.emitAgent(this.endpoint, "forceDeleteStack", this.stack.name, (res) => {
                 this.$root.toastRes(res);
                 if (res.ok) {
                     this.$router.push("/");

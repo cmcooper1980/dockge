@@ -212,7 +212,7 @@ export class Stack {
 
     async deploy(socket : DockgeSocket) : Promise<number> {
         const terminalName = getComposeTerminalName(socket.endpoint, this.name);
-        let exitCode = await Terminal.exec(this.server, socket, terminalName, "docker", this.getComposeOptions("up", "-d", "--remove-orphans"), this.path);
+        let exitCode = await Terminal.exec(this.server, socket, terminalName, "docker", ["compose", "up", "-d", "--remove-orphans"], this.path);
         if (exitCode !== 0) {
             throw new Error("Failed to deploy, please check the terminal output for more information.");
         }
@@ -221,9 +221,9 @@ export class Stack {
 
     async delete(socket: DockgeSocket, options: DeleteOptions) : Promise<number> {
         const terminalName = getComposeTerminalName(socket.endpoint, this.name);
-        let exitCode = await Terminal.exec(this.server, socket, terminalName, "docker", this.getComposeOptions("down", "--remove-orphans"), this.path);
+        let exitCode = await Terminal.exec(this.server, socket, terminalName, "docker", ["compose", "down", "--remove-orphans"], this.path);
         if (exitCode !== 0) {
-            throw new Error("Failed to delete, please check the terminal output for more information.");
+            throw new Error(`Failed to delete ${this.name}, please check the terminal output for more information.`);
         }
 
         if (options.deleteStackFiles) {
@@ -233,6 +233,19 @@ export class Stack {
                 force: true
             });
         }
+
+        return exitCode;
+    }
+
+    async forceDelete(socket: DockgeSocket): Promise<number> {
+        const terminalName = getComposeTerminalName(socket.endpoint, this.name);
+        let exitCode = await Terminal.exec(this.server, socket, terminalName, "docker", ["compose", "down", "-v", "--remove-orphans"], this.path);
+
+        // Remove the stack folder
+        await fsAsync.rm(this.path, {
+            recursive: true,
+            force: true
+        });
 
         return exitCode;
     }
