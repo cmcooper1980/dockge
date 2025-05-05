@@ -48,7 +48,9 @@ View Video: https://youtu.be/AWAlOQeNpgU?t=48
 - PR #649: Add Container Control Buttons (by https://github.com/mizady)
 - PR #700: Add Resource Usage Stats (by https://github.com/justwiebe)
 - PR #714: Conditional stack files deletion (by: https://github.com/husa)
+- PR #724: Adds force delete button when the delete option has failed (by: https://github.com/DomiiBunn)
 - PR #730: Add an Update All Button (by https://github.com/DomiiBunn)
+- PR #785: Add Cloudflare Turnstile captcha (by https://github.com/Kambaa)
 
 ## 🔧 How to Install
 
@@ -142,6 +144,9 @@ services:
     environment:
       # Tell Dockge where your stacks directory is
       DOCKGE_STACKS_DIR: /opt/stacks #must be the same as the source and target bind mounted volume
+      # Uncomment the following and enter valid Cloudflare Turnstile keys to activate
+      #- TURNSTILE_SITE_KEY=0x4AAAAAAXXXXXXXX 
+      #- TURNSTILE_SECRET_KEY=0x4AAAAAAXXXX
     ports:
       # Host Port : Container Port
       - 5001:5001
