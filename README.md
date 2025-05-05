@@ -144,7 +144,7 @@ services:
     environment:
       # Tell Dockge where your stacks directory is
       DOCKGE_STACKS_DIR: /opt/stacks #must be the same as the source and target bind mounted volume
-      # Uncomment the following and enter valid Cloudflare Turnstile keys to activate
+      # Uncomment the following and enter valid Cloudflare Turnstile keys to activate captcha
       #- TURNSTILE_SITE_KEY=0x4AAAAAAXXXXXXXX 
       #- TURNSTILE_SECRET_KEY=0x4AAAAAAXXXX
     ports:
