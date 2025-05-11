@@ -144,9 +144,13 @@ services:
     environment:
       # Tell Dockge where your stacks directory is
       DOCKGE_STACKS_DIR: /opt/stacks #must be the same as the source and target bind mounted volume
-      # Uncomment the following and enter valid Cloudflare Turnstile keys to activate captcha
-      #- TURNSTILE_SITE_KEY=0x4AAAAAAXXXXXXXX 
-      #- TURNSTILE_SECRET_KEY=0x4AAAAAAXXXX
+      # Uncomment the following and enter valid Cloudflare Turnstile keys to activate CAPTCHA
+      # *NOTE*: Turnstile should only be enabled on the dockge instance you consider to be the
+      #         master if using remote agents, otherwise remote agents will not be able to
+      #         connect due to the CAPTCHA challenge and if you must, only expose the master
+      #         to the internet for access.
+      #- TURNSTILE_SITE_KEY=0x4AAAAAAXXXXXXXX # uncomment this line to activate
+      #- TURNSTILE_SECRET_KEY=0x4AAAAAAXXXX   # uncomment this line to activate
     ports:
       # Host Port : Container Port
       - 5001:5001
