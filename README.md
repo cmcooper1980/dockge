@@ -51,7 +51,7 @@ View Video: https://youtu.be/AWAlOQeNpgU?t=48
 - PR #724: Adds force delete button when the delete option has failed (by: https://github.com/DomiiBunn)
 - PR #730: Add an Update All Button (by https://github.com/DomiiBunn)
 - PR #785: Add Cloudflare Turnstile captcha (by https://github.com/Kambaa)
-- PR #800: Improved stack list ui when using agents (by https://github.com/maca134)
+- PR #800: Improved stack list ui when using agents (by https://github.com/maca134) with QOL Commit ef7225a (by https://github.com/Dracrius)
 
 ## 🔧 How to Install
 
