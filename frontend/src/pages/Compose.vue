@@ -174,10 +174,13 @@
                 <div class="col-lg-6">
                     <h4 class="mb-3">{{ stack.composeFileName }}</h4>
 
-                    <!-- YAML editor -->
+                    <!-- YAML editor (inline) -->
                     <div class="shadow-box mb-3 editor-box" :class="{'edit-mode' : isEditMode}">
+                        <button v-if="isEditMode" v-b-modal.compose-editor-modal class="expand-button">
+                            <font-awesome-icon icon="expand" />
+                        </button>
                         <code-mirror
-                            ref="editor"
+                            ref="editorInline"
                             v-model="stack.composeYAML"
                             :extensions="extensions"
                             minimal
@@ -193,12 +196,36 @@
                         {{ yamlError }}
                     </div>
 
+                    <!-- YAML modal fullscreen editor (CodeMirror) -->
+                    <BModal id="compose-editor-modal" :title="stack.composeFileName" scrollable size="fullscreen" hide-footer>
+                        <div class="shadow-box mb-3 editor-box" :class="{'edit-mode' : isEditMode}">
+                            <code-mirror
+                                ref="editorModal"
+                                v-model="stack.composeYAML"
+                                :extensions="extensions"
+                                minimal
+                                wrap="true"
+                                dark="true"
+                                tab="true"
+                                :disabled="!isEditMode"
+                                :hasFocus="editorFocus"
+                                @change="yamlCodeChange"
+                            />
+                        </div>
+                        <div v-if="isEditMode" class="mb-3">
+                            {{ yamlError }}
+                        </div>
+                    </BModal>
+
                     <!-- ENV editor -->
                     <div v-if="isEditMode">
                         <h4 class="mb-3">.env</h4>
                         <div class="shadow-box mb-3 editor-box" :class="{'edit-mode' : isEditMode}">
+                            <button v-if="isEditMode" v-b-modal.env-editor-modal class="expand-button">
+                                <font-awesome-icon icon="expand" />
+                            </button>
                             <code-mirror
-                                ref="editor"
+                                ref="editorEnv"
                                 v-model="stack.composeENV"
                                 :extensions="extensionsEnv"
                                 minimal
@@ -211,6 +238,24 @@
                             />
                         </div>
                     </div>
+
+                    <!-- ENV modal fullscreen editor (CodeMirror) -->
+                    <BModal id="env-editor-modal" title=".env" scrollable size="fullscreen" hide-footer>
+                        <div class="shadow-box mb-3 editor-box" :class="{'edit-mode' : isEditMode}">
+                            <code-mirror
+                                ref="editorEnvModal"
+                                v-model="stack.composeENV"
+                                :extensions="extensionsEnv"
+                                minimal
+                                wrap="true"
+                                dark="true"
+                                tab="true"
+                                :disabled="!isEditMode"
+                                :hasFocus="editorFocus"
+                                @change="yamlCodeChange"
+                            />
+                        </div>
+                    </BModal>
 
                     <div v-if="isEditMode">
                         <!-- Volumes -->
@@ -332,9 +377,11 @@ export default {
             EditorView.focusChangeEffect.of(focusEffectHandler)
         ];
 
-        return { extensions,
+        return {
+            extensions,
             extensionsEnv,
-            editorFocus };
+            editorFocus
+        };
     },
     yamlDoc: null,  // For keeping the yaml comments
     data() {
@@ -471,7 +518,7 @@ export default {
                 if (!this.editorFocus) {
                     console.debug("jsonConfig changed");
 
-                    let doc = new Document(this.jsonConfig);
+                    const doc = new Document(this.jsonConfig);
 
                     // Stick back the yaml comments
                     if (this.yamlDoc) {
@@ -634,12 +681,12 @@ export default {
                 return;
             }
 
-            let serviceNameList = Object.keys(this.jsonConfig.services);
+            const serviceNameList = Object.keys(this.jsonConfig.services);
 
             // Set the stack name if empty, use the first container name
             if (!this.stack.name && serviceNameList.length > 0) {
-                let serviceName = serviceNameList[0];
-                let service = this.jsonConfig.services[serviceName];
+                const serviceName = serviceNameList[0];
+                const service = this.jsonConfig.services[serviceName];
 
                 if (service && service.container_name) {
                     this.stack.name = service.container_name;
@@ -746,7 +793,7 @@ export default {
         },
 
         yamlToJSON(yaml) {
-            let doc = parseDocument(yaml);
+            const doc = parseDocument(yaml);
             if (doc.errors.length > 0) {
                 throw doc.errors[0];
             }
@@ -771,13 +818,13 @@ export default {
 
         yamlCodeChange() {
             try {
-                let { config, doc } = this.yamlToJSON(this.stack.composeYAML);
+                const { config, doc } = this.yamlToJSON(this.stack.composeYAML);
 
                 this.yamlDoc = doc;
                 this.jsonConfig = config;
 
-                let env = dotenv.parse(this.stack.composeENV);
-                let envYAML = envsubstYAML(this.stack.composeYAML, env);
+                const env = dotenv.parse(this.stack.composeENV);
+                const envYAML = envsubstYAML(this.stack.composeYAML, env);
                 this.envsubstJSONConfig = this.yamlToJSON(envYAML).config;
 
                 clearTimeout(yamlErrorTimeout);
@@ -821,7 +868,7 @@ export default {
                 restart: "unless-stopped",
             };
             this.newContainerName = "";
-            let element = this.$refs.containerList.lastElementChild;
+            const element = this.$refs.containerList.lastElementChild;
             element.scrollIntoView({
                 block: "start",
                 behavior: "smooth"
@@ -884,6 +931,27 @@ export default {
 .editor-box {
     font-family: 'JetBrains Mono', monospace;
     font-size: 14px;
+    &.edit-mode {
+        background-color: #2c2f38 !important;
+    }
+    position: relative;
+}
+
+.expand-button {
+    all: unset;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    z-index: 10;
+}
+
+.expand-button svg {
+    width:20px;
+    height: 20px;
+}
+
+.expand-button:hover {
+    color: white;
 }
 
 .agent-name {
