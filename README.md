@@ -70,8 +70,8 @@ View Video: https://youtu.be/AWAlOQeNpgU?t=48
 - PR #800: Improved stack list ui when using agents (by https://github.com/maca134)
     - with QOL Commit `ef7225a` (by https://github.com/Dracrius)
 - PR #813: Fix "Exited" Status when Expected (by https://github.com/Aymendje)
-- PR #822: Add clipboard copy/paste support to terminal component (by https://github.com/Dimariqe)
-			- be sure to allow the permission in the browser to take effect
+- PR #822: Add clipboard copy/paste support to terminal component (by https://github.com/Dimariqe)  
+	- be sure to allow the permission in the browser to take effect
 - PR #827: Fullscreen yaml editor (by https://github.com/Joshua-Beatty)
 - PR #834: Add prune image on update process (by https://github.com/MazziaRick)
 - PR #863: Add Docker Images Management Feature (by https://github.com/felix068)
