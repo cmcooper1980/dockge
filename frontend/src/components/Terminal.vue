@@ -95,8 +95,6 @@ export default {
             this.interactiveTerminalConfig();
         }
 
-        //this.terminal.loadAddon(new WebLinksAddon());
-
         // Bind to a div
         this.terminal.open(this.$refs.terminal);
         this.terminal.focus();
@@ -141,6 +139,9 @@ export default {
 
     unmounted() {
         window.removeEventListener("resize", this.onResizeEvent);
+        if (this.$refs?.terminal) {
+            this.$refs.terminal.removeEventListener('contextmenu', this.handleContextMenu);
+        }
         this.$root.unbindTerminal(this.name);
         this.terminal.dispose();
     },
@@ -239,6 +240,7 @@ export default {
                 } else if (e.key === "\u0009" || e.key.startsWith("\u001B")) {   // TAB or other special keys
                     // Do nothing
                 } else {
+                    // Insert printable character at cursor position
                     const textBeforeCursor = this.terminalInputBuffer.slice(0, this.cursorPosition);
                     const textAfterCursor = this.terminalInputBuffer.slice(this.cursorPosition);
                     this.terminalInputBuffer = textBeforeCursor + e.key + textAfterCursor;
