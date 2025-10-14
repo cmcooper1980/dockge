@@ -167,7 +167,7 @@ docker compose pull && docker compose up -d
 Dockge is built on top of [Compose V2](https://docs.docker.com/compose/migrate/). `compose.yaml`  also known as `docker-compose.yml`.
 
 `compose.yaml` file above is great if cloning and building locally, otherwise, you can use this `docker-compose.yml` file to run docker command:
-`docker compose up -d` just edit the approprite field, `[CONFIG_LOCATION_FOR_DOCKGE]` (difference from compose.yaml is it does not have the build parameter):
+`docker compose up -d` just edit the appropriate field, `[CONFIG_LOCATION_FOR_DOCKGE]` (difference from compose.yaml is it does not have the build parameter):
 ```
 services:
   dockge:
