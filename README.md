@@ -8,16 +8,30 @@ A fancy, easy-to-use and reactive self-hosted docker compose stack-oriented mana
 
 [![GitHub Repo stars](https://img.shields.io/github/stars/cmcooper1980/dockge?logo=github&style=flat)](https://github.com/cmcooper1980/dockge) [![Docker Pulls](https://img.shields.io/docker/pulls/cmcooper1980/dockge?logo=docker)](https://hub.docker.com/r/cmcooper1980/dockge/tags) [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/cmcooper1980/dockge/latest?label=docker%20image%20ver.)](https://hub.docker.com/r/cmcooper1980/dockge/tags) [![GitHub last commit (branch)](https://img.shields.io/github/last-commit/cmcooper1980/dockge/master?logo=github)](https://github.com/cmcooper1980/dockge/commits/master/)
 
-<img src="https://github.com/louislam/dockge/assets/1336778/26a583e1-ecb1-4a8d-aedf-76157d714ad7" width="900" alt="" />
+<img width="3840" height="1937" alt="image" src="https://github.com/user-attachments/assets/3bb5aec8-e17a-43cb-8f15-908047282043" />
 
 View Video: https://youtu.be/AWAlOQeNpgU?t=48
 
 # Available Architectures
 
-| Docker Tag | Architecture     |
-|------------|------------------|
-| arm64      | arm64            |
-| latest     | x86-64          |
+<table>
+  <thead>
+    <tr>
+      <th>Docker Tag</th>
+      <th>Architecture</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>pinned version #</td>
+      <td rowspan="2">amd64 / arm64 / armv7</td>
+    </tr>
+    <tr>
+      <td>latest</td>
+    </tr>
+  </tbody>
+</table>
+
 
 
 ## ⭐ Features
@@ -42,6 +56,7 @@ View Video: https://youtu.be/AWAlOQeNpgU?t=48
 - PR #387: Global.env editor and usage in docker operations (by: https://github.com/syko9000)
 - PR #414: Set/Update Friendly Name (by https://github.com/lohrbini)
 - PR #575: Theme Options Enabled in Settings (by https://github.com/CampaniaGuy)
+- PR #582: Remove logging of terminal buffer to console (by https://github.com/black-dragon74)
 - PR #593: Group stacks by its agent (by https://github.com/ESPGranEdu)
 - PR #634: Build Frontend During Docker Build (by https://github.com/Jamie-)
 - PR #637: Implement RIGHT and LEFT KEYS terminal navigation (by https://github.com/lukasondrejka)
@@ -51,8 +66,25 @@ View Video: https://youtu.be/AWAlOQeNpgU?t=48
 - PR #724: Adds force delete button when the delete option has failed (by: https://github.com/DomiiBunn)
 - PR #730: Add an Update All Button (by https://github.com/DomiiBunn)
 - PR #785: Add Cloudflare Turnstile captcha (by https://github.com/Kambaa)
-- PR #800: Improved stack list ui when using agents (by https://github.com/maca134) with QOL Commit ef7225a (by https://github.com/Dracrius)
-
+- PR #786: Replace editor with Codemirror (by https://github.com/andersmmg)
+- PR #800: Improved stack list ui when using agents (by https://github.com/maca134)
+    - with QOL Commit `ef7225a` (by https://github.com/Dracrius)
+- PR #813: Fix "Exited" Status when Expected (by https://github.com/Aymendje)
+- PR #822: Add clipboard copy/paste support to terminal component (by https://github.com/Dimariqe)
+			- be sure to allow the permission in the browser to take effect
+- PR #827: Fullscreen yaml editor (by https://github.com/Joshua-Beatty)
+- PR #834: Add prune image on update process (by https://github.com/MazziaRick)
+- PR #863: Add Docker Images Management Feature (by https://github.com/felix068)
+	- Currently under `feature/image-management` branch use docker tag: `image-management`  
+	  to test
+- Commit `fc96f4e` (by https://github.com/Dracrius)
+	- switch to a button group and matched existing UI style (no more eye searing stop and restart buttons)
+	- Fixed message output to include a space after Service
+	- Added Processing prop and Start,Stop,Restart events
+- Commit `789f25a` (by https://github.com/Dracrius)
+	- Hide container controls if there is only one container  
+      Final change to louislam#649 as there is no need for the container controls if there is only a single container.
+   
 ## 🔧 How to Install
 
 Requirements:
@@ -117,14 +149,14 @@ docker compose pull && docker compose up -d
 
 ## Screenshots
 
-![](https://github.com/louislam/dockge/assets/1336778/e7ff0222-af2e-405c-b533-4eab04791b40)
+<img width="3840" height="1039" alt="image" src="https://github.com/user-attachments/assets/6712e0ff-5853-4618-8d8e-7e06fb7375f4" />
 
+<img width="2365" height="1205" alt="image" src="https://github.com/user-attachments/assets/eb4ef916-3793-4113-a8a3-7a7552e7869e" />
 
-![](https://github.com/louislam/dockge/assets/1336778/7139e88c-77ed-4d45-96e3-00b66d36d871)
+<img width="3838" height="821" alt="image" src="https://github.com/user-attachments/assets/c649b376-4d2a-4913-99f7-4e7ecb655e09" />
 
-![](https://github.com/louislam/dockge/assets/1336778/f019944c-0e87-405b-a1b8-625b35de1eeb)
+<img width="3172" height="1360" alt="image" src="https://github.com/user-attachments/assets/6fd78c58-7a45-460c-8702-020083477203" />
 
-![](https://github.com/louislam/dockge/assets/1336778/a4478d23-b1c4-4991-8768-1a7cad3472e3)
 
 
 

@@ -379,7 +379,7 @@ export class Stack {
      */
     static async getSingleComposeStatus(composeName : string) : Promise<any[] | null> {
 
-        let res = await childProcessAsync.spawn("docker", [ "ps", "-a", "--filter", `"label=com.docker.compose.project=${composeName}"`, "--format", "json" ], {
+        let res = await childProcessAsync.spawn("docker", [ "ps", "-a", "--filter", `label=com.docker.compose.project=${composeName}`, "--format", "json" ], {
             encoding: "utf-8",
         });
 
