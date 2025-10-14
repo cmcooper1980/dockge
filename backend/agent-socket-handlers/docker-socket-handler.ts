@@ -288,7 +288,7 @@ export class DockerSocketHandler extends AgentSocketHandler {
                 stack.joinCombinedTerminal(socket); // Ensure the combined terminal is joined
                 callbackResult({
                     ok: true,
-                    msg: "Service" + serviceName + " started"
+                    msg: "Service " + serviceName + " started"
                 }, callback);
                 server.sendStackList();
             } catch (e) {
@@ -309,7 +309,7 @@ export class DockerSocketHandler extends AgentSocketHandler {
                 await stack.stopService(socket, serviceName);
                 callbackResult({
                     ok: true,
-                    msg: "Service" + serviceName + " stopped"
+                    msg: "Service " + serviceName + " stopped"
                 }, callback);
                 server.sendStackList();
             } catch (e) {
@@ -329,7 +329,7 @@ export class DockerSocketHandler extends AgentSocketHandler {
                 await stack.restartService(socket, serviceName);
                 callbackResult({
                     ok: true,
-                    msg: "Service" + serviceName + " restarted"
+                    msg: "Service " + serviceName + " restarted"
                 }, callback);
             } catch (e) {
                 callbackError(e, callback);
@@ -372,4 +372,3 @@ export class DockerSocketHandler extends AgentSocketHandler {
     }
 
 }
-
