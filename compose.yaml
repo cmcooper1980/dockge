@@ -6,27 +6,36 @@ services:
       dockerfile: docker/Dockerfile
     restart: unless-stopped
     ports:
-      # Host Port : Container Port
       - 5001:5001
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./data:/app/data
-        
-      # If you want to use private registries, you need to share the auth file with Dockge:
-      # - /root/.docker/:/root/.docker
-
-      # Stacks Directory
-      # ⚠️ READ IT CAREFULLY. If you did it wrong, your data could end up writing into a WRONG PATH.
-      # ⚠️ 1. FULL path only. No relative path (MUST)
-      # ⚠️ 2. Left Stacks Path === Right Stacks Path (MUST)
+      # - /root/.docker/:/root/.docker   # (optional) private registries
       - /opt/stacks:/opt/stacks
     environment:
-      # Tell Dockge where is your stacks directory
       - DOCKGE_STACKS_DIR=/opt/stacks
-      # Uncomment the following and enter valid Cloudflare Turnstile keys to activate CAPTCHA
-      # *NOTE*: Turnstile should only be enabled on the dockge instance you consider to be the
-      #         master if using remote agents, otherwise remote agents will not be able to
-      #         connect due to the CAPTCHA challenge and if you must, only expose the master
-      #         to the internet for access.
-      #- TURNSTILE_SITE_KEY=0x4AAAAAAXXXXXXXX 
-      #- TURNSTILE_SECRET_KEY=0x4AAAAAAXXXX
+
+      # Init behavior (safe defaults)
+      - AUTO_CREATE_USER=1
+      # - RESET_PASSWORD_ON_START=1  # uncomment only if you WANT rotation every boot
+
+      # Supply USER either as env or as secret (choose ONE approach):
+      - USER=testuser
+      # USER_FILE will be read if USER is not set; uncomment if you create a user secret:
+      # - USER_FILE=/run/secrets/dockge_user
+
+      # PASSWORD will be read from PASSWORD_FILE; no need to set PASSWORD env
+      - PASSWORD_FILE=/run/secrets/dockge_password
+
+    secrets:
+      - dockge_password
+      # - dockge_user  # uncomment if you prefer user via secret too
+
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+
+secrets:
+  dockge_password:
+    file: ./secrets/dockge_password.txt
+  # dockge_user:
+  #   file: ./secrets/dockge_user.txt

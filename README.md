@@ -70,8 +70,8 @@ View Video: https://youtu.be/AWAlOQeNpgU?t=48
 - PR #800: Improved stack list ui when using agents (by https://github.com/maca134)
     - with QOL Commit `ef7225a` (by https://github.com/Dracrius)
 - PR #813: Fix "Exited" Status when Expected (by https://github.com/Aymendje)
-- PR #822: Add clipboard copy/paste support to terminal component (by https://github.com/Dimariqe)
-			- be sure to allow the permission in the browser to take effect
+- PR #822: Add clipboard copy/paste support to terminal component (by https://github.com/Dimariqe)  
+	- be sure to allow the permission in the browser to take effect
 - PR #827: Fullscreen yaml editor (by https://github.com/Joshua-Beatty)
 - PR #834: Add prune image on update process (by https://github.com/MazziaRick)
 - PR #863: Add Docker Images Management Feature (by https://github.com/felix068)
@@ -128,6 +128,15 @@ Dockge is now running on http://localhost:5001
 
 If you want to store your stacks in another directory, you can generate your compose.yaml file by using the following URL with custom query strings and change the image from `louislam/dockge:1` to `cmcooper1980/dockge` after downloading if you want to use this fork; or see and update the example docker-compose.yml file at the bottom of this page.
 
+### (_OPTIONAL_) Set up USER and PASSWORD at runtim (_can be done via GUI if left blank_)
+Fill the `USER` environment variable and `docker secrets` `PASSWORD` accordingly in the `compose.yaml` file  
+secrets creation:  
+```mkdir -p ./secrets
+printf 'Pass1234\n' > ./secrets/dockge_password.txt
+# optional
+# printf 'testuser\n' > ./secrets/dockge_user.txt
+```
+
 ### Download your compose.yaml
 (in the link, change 5001 to your custom port and the /opt/stacks portion to your custom stack location)
 
@@ -167,7 +176,7 @@ docker compose pull && docker compose up -d
 Dockge is built on top of [Compose V2](https://docs.docker.com/compose/migrate/). `compose.yaml`  also known as `docker-compose.yml`.
 
 `compose.yaml` file above is great if cloning and building locally, otherwise, you can use this `docker-compose.yml` file to run docker command:
-`docker compose up -d` just edit the approprite field, `[CONFIG_LOCATION_FOR_DOCKGE]` (difference from compose.yaml is it does not have the build parameter):
+`docker compose up -d` just edit the appropriate field, `[CONFIG_LOCATION_FOR_DOCKGE]` (difference from compose.yaml is it does not have the build parameter):
 ```
 services:
   dockge:
