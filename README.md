@@ -132,14 +132,15 @@ Dockge is now running on http://localhost:5001
 
 If you want to store your stacks in another directory, you can generate your compose.yaml file by using the following URL with custom query strings and change the image from `louislam/dockge:1` to `cmcooper1980/dockge` after downloading if you want to use this fork; or see and update the example docker-compose.yml file at the bottom of this page.
 
-### (_OPTIONAL_) Set up USER and PASSWORD at runtime (_can be done via GUI if left blank_)
+### (_OPTIONAL_) Set up `USER` and `PASSWORD` at runtime (_can be done via GUI if left blank_)
 Fill the `USER` environment variable and `docker secrets` `PASSWORD` accordingly in the `compose.yaml` file  
-secrets creation:  
-```mkdir -p ./secrets
-printf 'Pass1234\n' > ./secrets/dockge_password.txt
-# optional
-# printf 'testuser\n' > ./secrets/dockge_user.txt
-```
+*Secrets creation:*  
+-    Make the directory:  
+    `mkdir -p ./secrets`
+-    Create the file with your password in it.  
+    `printf 'Pass1234' > ./secrets/dockge_password.txt` or `echo -n 'Pass1234' > ./secrets/dockge_password.txt`  
+-    _(optionally have your username as a secret also)_  
+    `printf 'testuser' > ./secrets/dockge_user.txt` or `echo -n 'testuser' > ./secrets/dockge_user.txt`
 
 ### Download your compose.yaml
 (in the link, change 5001 to your custom port and the /opt/stacks portion to your custom stack location)
