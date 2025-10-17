@@ -55,6 +55,10 @@ View Video: https://youtu.be/AWAlOQeNpgU?t=48
 ## ⭐ Pull Requests Merged:
 - PR #387: Global.env editor and usage in docker operations (by: https://github.com/syko9000)
 - PR #414: Set/Update Friendly Name (by https://github.com/lohrbini)
+- PR #426: Allow to set user and password using environment variables at runtime (by: https://github.com/laurentlemercier)
+    - original concept of this PR was to create the user via ENV variables after spinning up the container then running commands
+      with `docker exec` and restarting the container; this modification of the PR instead creates the user at initial runtime based on
+      `USER` and `PASSWORD` environmental variables set in the compose file.
 - PR #575: Theme Options Enabled in Settings (by https://github.com/CampaniaGuy)
 - PR #582: Remove logging of terminal buffer to console (by https://github.com/black-dragon74)
 - PR #593: Group stacks by its agent (by https://github.com/ESPGranEdu)
