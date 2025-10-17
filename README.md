@@ -128,7 +128,7 @@ Dockge is now running on http://localhost:5001
 
 If you want to store your stacks in another directory, you can generate your compose.yaml file by using the following URL with custom query strings and change the image from `louislam/dockge:1` to `cmcooper1980/dockge` after downloading if you want to use this fork; or see and update the example docker-compose.yml file at the bottom of this page.
 
-### (_OPTIONAL_) Set up USER and PASSWORD at runtim (_can be done via GUI if left blank_)
+### (_OPTIONAL_) Set up USER and PASSWORD at runtime (_can be done via GUI if left blank_)
 Fill the `USER` environment variable and `docker secrets` `PASSWORD` accordingly in the `compose.yaml` file  
 secrets creation:  
 ```mkdir -p ./secrets
