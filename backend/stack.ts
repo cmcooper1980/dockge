@@ -386,8 +386,15 @@ export class Stack {
         if (!res.stdout) {
             return null;
         }
-
-        let composeList = JSON.parse(res.stdout.toString());
+        let dockerResponse = res.stdout.toString()
+        let composeList;
+        try {
+            composeList = JSON.parse(dockerResponse);
+        } catch (error) {
+            // Optional: Log the error for debugging purposes
+            console.error("Failed to parse JSON from res.stdout: ", res.dockerResponse);
+            return null; 
+        }
 
         return composeList;
     }
