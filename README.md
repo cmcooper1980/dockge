@@ -8,7 +8,7 @@ A fancy, easy-to-use and reactive self-hosted docker compose stack-oriented mana
 
 [![GitHub Repo stars](https://img.shields.io/github/stars/cmcooper1980/dockge?logo=github&style=flat)](https://github.com/cmcooper1980/dockge) [![Docker Pulls](https://img.shields.io/docker/pulls/cmcooper1980/dockge?logo=docker)](https://hub.docker.com/r/cmcooper1980/dockge/tags) [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/cmcooper1980/dockge/latest?label=docker%20image%20ver.)](https://hub.docker.com/r/cmcooper1980/dockge/tags) [![GitHub last commit (branch)](https://img.shields.io/github/last-commit/cmcooper1980/dockge/master?logo=github)](https://github.com/cmcooper1980/dockge/commits/master/)
 
-<img width="3840" height="1937" alt="image" src="https://github.com/user-attachments/assets/3bb5aec8-e17a-43cb-8f15-908047282043" />
+<img width="3840" height="1873" alt="image" src="https://github.com/user-attachments/assets/7d439384-0ab3-4088-9b6e-bcb47f7b93f6" />
 
 View Video: https://youtu.be/AWAlOQeNpgU?t=48
 
@@ -149,13 +149,21 @@ docker compose pull && docker compose up -d
 
 ## Screenshots
 
-<img width="3840" height="1039" alt="image" src="https://github.com/user-attachments/assets/6712e0ff-5853-4618-8d8e-7e06fb7375f4" />
+<img width="3839" height="984" alt="image" src="https://github.com/user-attachments/assets/bebd68f7-346f-432c-b915-8f90a25aa0d4" />
 
-<img width="2365" height="1205" alt="image" src="https://github.com/user-attachments/assets/eb4ef916-3793-4113-a8a3-7a7552e7869e" />
+<img width="3840" height="1333" alt="image" src="https://github.com/user-attachments/assets/f1d99dcd-d5cd-4530-afe3-a108159c2af3" />
 
-<img width="3838" height="821" alt="image" src="https://github.com/user-attachments/assets/c649b376-4d2a-4913-99f7-4e7ecb655e09" />
+<img width="3835" height="774" alt="image" src="https://github.com/user-attachments/assets/ff932c75-0307-4e1d-b311-57d4822e4588" />
 
-<img width="3172" height="1360" alt="image" src="https://github.com/user-attachments/assets/6fd78c58-7a45-460c-8702-020083477203" />
+<img width="3840" height="1241" alt="image" src="https://github.com/user-attachments/assets/a5874e5b-8510-4169-9aec-da92301ca946" />
+
+<img width="3840" height="736" alt="image" src="https://github.com/user-attachments/assets/5b7eff77-b3ab-420e-b762-92d9c0953089" />
+
+<img width="3840" height="1152" alt="image" src="https://github.com/user-attachments/assets/88c3b7ac-3548-4e7f-a094-f8dc834ed7cc" />
+
+<img width="3840" height="850" alt="image" src="https://github.com/user-attachments/assets/f8dff7ad-cfee-4273-8dd7-adf9a488212c" />
+
+<img width="3840" height="1358" alt="image" src="https://github.com/user-attachments/assets/33d06843-bcc8-4696-9444-138c0be61b3a" />
 
 
 
