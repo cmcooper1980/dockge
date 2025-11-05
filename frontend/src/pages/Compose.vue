@@ -174,19 +174,49 @@
                 <div class="col-lg-6">
                     <!-- Override YAML editor (only show if file exists) -->
                     <div v-if="stack.composeOverrideYAML && stack.composeOverrideYAML.trim() !== ''">
-                        <h4 class="mb-3">compose.override.yaml</h4>
+                    <h4 class="mb-3">docker-compose.override.yml</h4>
+                    <div class="shadow-box mb-3 editor-box" :class="{'edit-mode' : isEditMode}">
+                        <button v-if="isEditMode" v-b-modal.compose-override-editor-modal class="expand-button">
+                            <font-awesome-icon icon="expand" />
+                        </button>
+                        <code-mirror
+                            ref="overrideEditor"
+                            v-model="stack.composeOverrideYAML"
+                            :extensions="extensions"
+                            minimal
+                            wrap="true"
+                            dark="true"
+                            tab="true"
+                            :disabled="!isEditMode"
+                            :hasFocus="editorFocus"
+                            @change="yamlCodeChange"
+                        />
+                    </div>
+                    <div v-if="isEditMode" class="mb-3">
+                        {{ yamlError }}
+                    </div>
+
+                    <!-- Override modal fullscreen editor (CodeMirror) -->
+                    <BModal id="compose-override-editor-modal" title="docker-compose.override.yml" scrollable size="fullscreen" hide-footer>
                         <div class="shadow-box mb-3 editor-box" :class="{'edit-mode' : isEditMode}">
-                            <prism-editor
-                                ref="overrideEditor"
+                            <code-mirror
+                                ref="editorModal"
                                 v-model="stack.composeOverrideYAML"
-                                class="yaml-editor"
-                                :highlight="highlighterYAML"
-                                line-numbers :readonly="!isEditMode"
-                                @input="yamlCodeChange"
-                                @focus="editorFocus = true"
-                                @blur="editorFocus = false"
-                            ></prism-editor>
+                                :extensions="extensions"
+                                minimal
+                                wrap="true"
+                                dark="true"
+                                tab="true"
+                                :disabled="!isEditMode"
+                                :hasFocus="editorFocus"
+                                @change="yamlCodeChange"
+                            />
                         </div>
+                        <div v-if="isEditMode" class="mb-3">
+                            {{ yamlError }}
+                        </div>
+                    </BModal>
+
                     </div>
 
                     <h4 class="mb-3">{{ stack.composeFileName }}</h4>
