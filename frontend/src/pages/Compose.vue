@@ -174,7 +174,7 @@
                 <div class="col-lg-6">
                     <!-- Override YAML editor (only show if file exists) -->
                     <div v-if="stack.composeOverrideYAML && stack.composeOverrideYAML.trim() !== ''">
-                    <h4 class="mb-3">docker-compose.override.yml</h4>
+                    <h4 class="mb-3">{{ stack.composeOverrideFileName || 'compose.override.yaml' }}</h4>
                     <div class="shadow-box mb-3 editor-box" :class="{'edit-mode' : isEditMode}">
                         <button v-if="isEditMode" v-b-modal.compose-override-editor-modal class="expand-button">
                             <font-awesome-icon icon="expand" />
@@ -197,7 +197,8 @@
                     </div>
 
                     <!-- Override modal fullscreen editor (CodeMirror) -->
-                    <BModal id="compose-override-editor-modal" title="docker-compose.override.yml" scrollable size="fullscreen" hide-footer>
+                    <BModal id="compose-override-editor-modal" :title="stack.composeOverrideFileName || 'compose.override.yaml'"
+scrollable size="fullscreen" hide-footer>
                         <div class="shadow-box mb-3 editor-box" :class="{'edit-mode' : isEditMode}">
                             <code-mirror
                                 ref="editorModal"
