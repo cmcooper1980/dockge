@@ -172,6 +172,54 @@
                     </div>
                 </div>
                 <div class="col-lg-6">
+                    <!-- Override YAML editor (only show if file exists) -->
+                    <div v-if="stack.composeOverrideYAML && stack.composeOverrideYAML.trim() !== ''">
+                    <h4 class="mb-3">{{ stack.composeOverrideFileName || 'compose.override.yaml' }}</h4>
+                    <div class="shadow-box mb-3 editor-box" :class="{'edit-mode' : isEditMode}">
+                        <button v-if="isEditMode" v-b-modal.compose-override-editor-modal class="expand-button">
+                            <font-awesome-icon icon="expand" />
+                        </button>
+                        <code-mirror
+                            ref="overrideEditor"
+                            v-model="stack.composeOverrideYAML"
+                            :extensions="extensions"
+                            minimal
+                            wrap="true"
+                            dark="true"
+                            tab="true"
+                            :disabled="!isEditMode"
+                            :hasFocus="editorFocus"
+                            @change="yamlCodeChange"
+                        />
+                    </div>
+                    <div v-if="isEditMode" class="mb-3">
+                        {{ yamlError }}
+                    </div>
+
+                    <!-- Override modal fullscreen editor (CodeMirror) -->
+                    <BModal id="compose-override-editor-modal" :title="stack.composeOverrideFileName || 'compose.override.yaml'"
+scrollable size="fullscreen" hide-footer>
+                        <div class="shadow-box mb-3 editor-box" :class="{'edit-mode' : isEditMode}">
+                            <code-mirror
+                                ref="editorModal"
+                                v-model="stack.composeOverrideYAML"
+                                :extensions="extensions"
+                                minimal
+                                wrap="true"
+                                dark="true"
+                                tab="true"
+                                :disabled="!isEditMode"
+                                :hasFocus="editorFocus"
+                                @change="yamlCodeChange"
+                            />
+                        </div>
+                        <div v-if="isEditMode" class="mb-3">
+                            {{ yamlError }}
+                        </div>
+                    </BModal>
+
+                    </div>
+
                     <h4 class="mb-3">{{ stack.composeFileName }}</h4>
 
                     <!-- YAML editor (inline) -->
@@ -395,7 +443,7 @@ export default {
             combinedTerminalRows: COMBINED_TERMINAL_ROWS,
             combinedTerminalCols: COMBINED_TERMINAL_COLS,
             stack: {
-
+                composeOverrideYAML: "",
             },
             serviceStatusList: {},
             dockerStats: {},
@@ -507,6 +555,16 @@ export default {
             handler() {
                 if (this.editorFocus) {
                     console.debug("env code changed");
+                    this.yamlCodeChange();
+                }
+            },
+            deep: true,
+        },
+
+        "stack.composeOverrideYAML": {
+            handler() {
+                if (this.editorFocus) {
+                    console.debug("override yaml code changed");
                     this.yamlCodeChange();
                 }
             },
@@ -697,7 +755,7 @@ export default {
 
             this.bindTerminal();
 
-            this.$root.emitAgent(this.stack.endpoint, "deployStack", this.stack.name, this.stack.composeYAML, this.stack.composeENV, this.isAdd, (res) => {
+            this.$root.emitAgent(this.stack.endpoint, "deployStack", this.stack.name, this.stack.composeYAML, this.stack.composeENV, this.stack.composeOverrideYAML || "", this.isAdd, (res) => {
                 this.processing = false;
                 this.$root.toastRes(res);
 
@@ -711,7 +769,7 @@ export default {
         saveStack() {
             this.processing = true;
 
-            this.$root.emitAgent(this.stack.endpoint, "saveStack", this.stack.name, this.stack.composeYAML, this.stack.composeENV, this.isAdd, (res) => {
+            this.$root.emitAgent(this.stack.endpoint, "saveStack", this.stack.name, this.stack.composeYAML, this.stack.composeENV, this.stack.composeOverrideYAML || "", this.isAdd, (res) => {
                 this.processing = false;
                 this.$root.toastRes(res);
 
