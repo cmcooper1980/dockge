@@ -20,9 +20,28 @@ import {
 import { InteractiveTerminal, Terminal } from "./terminal";
 import childProcessAsync from "promisify-child-process";
 import { Settings } from "./settings";
+import {types} from "sass";
+import List = types.List;
 
 export interface DeleteOptions {
     deleteStackFiles: boolean
+}
+
+interface ComposePSResult {
+    Command: string;
+    CreatedAt: string;
+    ID: string;
+    Image: string;
+    Labels: string;
+    LocalVolumes: string;
+    Mounts: string;
+    Name: string;
+    Networks: string;
+    Project: string;
+    Service: string;
+    Size: string;
+    State: string;
+    Status: string;
 }
 
 export class Stack {
@@ -451,10 +470,13 @@ export class Stack {
         const expectedContainersExited = parseInt(composeStack.Status.split("(")[1].split(")")[0]);
         let cleanlyExitedContainerCount = 0;
 
-        const composeStatus = await this.getSingleComposeStatus(composeStack.Name);
+        let composeStatus = await this.getSingleComposeStatus(composeStack.Name);
 
         if (composeStatus === null) {
             return EXITED;
+        }
+        if (!(typeof composeStatus[Symbol.iterator] === "function")) {
+            composeStatus = [ composeStatus ];
         }
         for (const containerStatus of composeStatus) {
             const status = containerStatus.Status.trim();
