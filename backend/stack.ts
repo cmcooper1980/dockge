@@ -20,28 +20,11 @@ import {
 import { InteractiveTerminal, Terminal } from "./terminal";
 import childProcessAsync from "promisify-child-process";
 import { Settings } from "./settings";
-import {types} from "sass";
+import { types } from "sass";
 import List = types.List;
 
 export interface DeleteOptions {
     deleteStackFiles: boolean
-}
-
-interface ComposePSResult {
-    Command: string;
-    CreatedAt: string;
-    ID: string;
-    Image: string;
-    Labels: string;
-    LocalVolumes: string;
-    Mounts: string;
-    Name: string;
-    Networks: string;
-    Project: string;
-    Service: string;
-    Size: string;
-    State: string;
-    Status: string;
 }
 
 export class Stack {
