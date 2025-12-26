@@ -20,8 +20,6 @@ import {
 import { InteractiveTerminal, Terminal } from "./terminal";
 import childProcessAsync from "promisify-child-process";
 import { Settings } from "./settings";
-import { types } from "sass";
-import List = types.List;
 
 export interface DeleteOptions {
     deleteStackFiles: boolean
