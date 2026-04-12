@@ -533,8 +533,8 @@ export default {
         },
 
         url() {
-            if (this.stack.endpoint) {
-                return `/compose/${this.stack.name}/${this.stack.endpoint}`;
+            if (this.endpoint) {
+                return `/compose/${this.stack.name}/${this.endpoint}`;
             } else {
                 return `/compose/${this.stack.name}`;
             }
@@ -608,6 +608,7 @@ export default {
             } else {
                 composeYAML = template;
             }
+
             if (this.$root.envTemplate) {
                 composeENV = this.$root.envTemplate;
                 this.$root.envTemplate = "";
@@ -620,12 +621,12 @@ export default {
                 name: "",
                 composeYAML,
                 composeENV,
+                composeOverrideYAML: "",
                 isManagedByDockge: true,
-                endpoint: "",
+                endpoint: this.$route.params.endpoint || "",
             };
 
             this.yamlCodeChange();
-
         } else {
             this.stack.name = this.$route.params.stackName;
             this.loadStack();
@@ -753,31 +754,55 @@ export default {
                 }
             }
 
+            // Keep the stack object aligned with the resolved endpoint
+            this.stack.endpoint = this.endpoint;
+
             this.bindTerminal();
 
-            this.$root.emitAgent(this.stack.endpoint, "deployStack", this.stack.name, this.stack.composeYAML, this.stack.composeENV, this.stack.composeOverrideYAML || "", this.isAdd, (res) => {
-                this.processing = false;
-                this.$root.toastRes(res);
+            this.$root.emitAgent(
+                this.endpoint,
+                "deployStack",
+                this.stack.name,
+                this.stack.composeYAML,
+                this.stack.composeENV,
+                this.stack.composeOverrideYAML || "",
+                this.isAdd,
+                (res) => {
+                    this.processing = false;
+                    this.$root.toastRes(res);
 
-                if (res.ok) {
-                    this.isEditMode = false;
-                    this.$router.push(this.url);
+                    if (res.ok) {
+                        this.isEditMode = false;
+                        this.$router.push(this.url);
+                    }
                 }
-            });
+            );
         },
 
         saveStack() {
             this.processing = true;
 
-            this.$root.emitAgent(this.stack.endpoint, "saveStack", this.stack.name, this.stack.composeYAML, this.stack.composeENV, this.stack.composeOverrideYAML || "", this.isAdd, (res) => {
-                this.processing = false;
-                this.$root.toastRes(res);
+            // Keep the stack object aligned with the resolved endpoint
+            this.stack.endpoint = this.endpoint;
 
-                if (res.ok) {
-                    this.isEditMode = false;
-                    this.$router.push(this.url);
+            this.$root.emitAgent(
+                this.endpoint,
+                "saveStack",
+                this.stack.name,
+                this.stack.composeYAML,
+                this.stack.composeENV,
+                this.stack.composeOverrideYAML || "",
+                this.isAdd,
+                (res) => {
+                    this.processing = false;
+                    this.$root.toastRes(res);
+
+                    if (res.ok) {
+                        this.isEditMode = false;
+                        this.$router.push(this.url);
+                    }
                 }
-            });
+            );
         },
 
         startStack() {
