@@ -225,6 +225,12 @@ export class Stack {
                 throw new ValidationError("Stack name already exists");
             }
 
+           // If this is a new stack that has no compose file yet, use the stack name as directory
+            if (dir === "") {
+                this._configFilePath = path.join(this.server.stacksDir, this.name);
+                dir = this.path;
+            }
+
             // Create the stack folder
             await fsAsync.mkdir(dir);
         } else {
