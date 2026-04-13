@@ -55,9 +55,13 @@
                 </div>
 
                 <button v-if="isEditMode && !isAdd" class="btn btn-normal" :disabled="processing" @click="discardStack">{{ $t("discardStack") }}</button>
-                <button v-if="!isEditMode" class="btn btn-danger" :disabled="processing" @click="showDeleteDialog = !showDeleteDialog">
+                <button v-if="!isEditMode && !errorDelete" class="btn btn-danger" :disabled="processing" @click="showDeleteDialog = !showDeleteDialog">
                     <font-awesome-icon icon="trash" class="me-1" />
                     {{ $t("deleteStack") }}
+                </button>
+                <button v-if="errorDelete" class="btn btn-danger" :disabled="processing" @click="showForceDeleteDialog = !showForceDeleteDialog">
+                    <font-awesome-icon icon="trash" class="me-1" />
+                    {{ $t("forceDeleteStack") }}
                 </button>
             </div>
 
@@ -167,10 +171,61 @@
                     </div>
                 </div>
                 <div class="col-lg-6">
+                    <!-- Override YAML editor (only show if file exists) -->
+                    <div v-if="stack.composeOverrideYAML && stack.composeOverrideYAML.trim() !== ''">
+                    <h4 class="mb-3">{{ stack.composeOverrideFileName || 'compose.override.yaml' }}</h4>
+                    <div class="shadow-box mb-3 editor-box" :class="{'edit-mode' : isEditMode}">
+                        <button v-if="isEditMode" v-b-modal.compose-override-editor-modal class="expand-button">
+                            <font-awesome-icon icon="expand" />
+                        </button>
+                        <code-mirror
+                            ref="overrideEditor"
+                            v-model="stack.composeOverrideYAML"
+                            :extensions="extensions"
+                            minimal
+                            wrap="true"
+                            dark="true"
+                            tab="true"
+                            :disabled="!isEditMode"
+                            :hasFocus="editorFocus"
+                            @change="yamlCodeChange"
+                        />
+                    </div>
+                    <div v-if="isEditMode" class="mb-3">
+                        {{ yamlError }}
+                    </div>
+
+                    <!-- Override modal fullscreen editor (CodeMirror) -->
+                    <BModal id="compose-override-editor-modal" :title="stack.composeOverrideFileName || 'compose.override.yaml'"
+scrollable size="fullscreen" hide-footer>
+                        <div class="shadow-box mb-3 editor-box" :class="{'edit-mode' : isEditMode}">
+                            <code-mirror
+                                ref="editor"
+                                v-model="stack.composeOverrideYAML"
+                                :extensions="extensions"
+                                minimal
+                                wrap="true"
+                                dark="true"
+                                tab="true"
+                                :disabled="!isEditMode"
+                                :hasFocus="editorFocus"
+                                @change="yamlCodeChange"
+                            />
+                        </div>
+                        <div v-if="isEditMode" class="mb-3">
+                            {{ yamlError }}
+                        </div>
+                    </BModal>
+
+                    </div>
+
                     <h4 class="mb-3">{{ stack.composeFileName }}</h4>
 
                     <!-- YAML editor -->
                     <div class="shadow-box mb-3 editor-box" :class="{'edit-mode' : isEditMode}">
+                        <button v-if="isEditMode" v-b-modal.compose-editor-modal class="expand-button">
+                            <font-awesome-icon icon="expand" />
+                        </button>
                         <code-mirror
                             ref="editor"
                             v-model="stack.composeYAML"
@@ -188,10 +243,35 @@
                         {{ yamlError }}
                     </div>
 
+                    <!-- YAML modal fullscreen editor (CodeMirror) -->
+                    <BModal id="compose-editor-modal" :title="stack.composeFileName" scrollable size="fullscreen" hide-footer>
+                        <div class="shadow-box mb-3 editor-box" :class="{'edit-mode' : isEditMode}">
+                            <code-mirror
+                                ref="editor"
+                                v-model="stack.composeYAML"
+                                :extensions="extensions"
+                                minimal
+                                wrap="true"
+                                dark="true"
+                                tab="true"
+                                :disabled="!isEditMode"
+                                :hasFocus="editorFocus"
+                                @change="yamlCodeChange"
+                            />
+                        </div>
+                        <div v-if="isEditMode" class="mb-3">
+                            {{ yamlError }}
+                        </div>
+                    </BModal>
+
+
                     <!-- ENV editor -->
                     <div v-if="isEditMode">
                         <h4 class="mb-3">.env</h4>
                         <div class="shadow-box mb-3 editor-box" :class="{'edit-mode' : isEditMode}">
+                            <button v-if="isEditMode" v-b-modal.env-editor-modal class="expand-button">
+                                <font-awesome-icon icon="expand" />
+                            </button>
                             <code-mirror
                                 ref="editor"
                                 v-model="stack.composeENV"
@@ -207,6 +287,24 @@
                         </div>
                     </div>
 
+                    <!-- ENV modal fullscreen editor (CodeMirror) -->
+                    <BModal id="env-editor-modal" title=".env" scrollable size="fullscreen" hide-footer>
+                        <div class="shadow-box mb-3 editor-box" :class="{'edit-mode' : isEditMode}">
+                            <code-mirror
+                                ref="editor"
+                                v-model="stack.composeENV"
+                                :extensions="extensionsEnv"
+                                minimal
+                                wrap="true"
+                                dark="true"
+                                tab="true"
+                                :disabled="!isEditMode"
+                                :hasFocus="editorFocus"
+                                @change="yamlCodeChange"
+                            />
+                        </div>
+                    </BModal>
+
                     <div v-if="isEditMode">
                         <!-- Volumes -->
                         <div v-if="false">
@@ -221,6 +319,13 @@
                             <NetworkInput />
                         </div>
                     </div>
+
+                    <!-- <div class="shadow-box big-padding mb-3">
+                        <div class="mb-3">
+                            <label for="name" class="form-label"> Search Templates</label>
+                            <input id="name" v-model="name" type="text" class="form-control" placeholder="Search..." required>
+                        </div>
+                    </div>-->
                 </div>
             </div>
 
@@ -231,6 +336,15 @@
             <!-- Delete Dialog -->
             <BModal v-model="showDeleteDialog" :cancelTitle="$t('cancel')" :okTitle="$t('deleteStack')" okVariant="danger" @ok="deleteDialog">
                 {{ $t("deleteStackMsg") }}
+                <div class="form-check mt-4">
+                    <label><input v-model="deleteStackFiles" class="form-check-input" type="checkbox" />{{
+                        $t("deleteStackFilesConfirmation") }}</label>
+                </div>
+            </BModal>
+
+            <!-- Force Delete Dialog -->
+            <BModal v-model="showForceDeleteDialog" :okTitle="$t('forceDeleteStack')" okVariant="danger" @ok="forceDeleteDialog">
+                {{ $t("forceDeleteStackMsg") }}
             </BModal>
         </div>
     </transition>
@@ -351,7 +465,8 @@ export default {
         return {
             extensions,
             extensionsEnv,
-            editorFocus };
+            editorFocus
+        };
     },
     yamlDoc: null,  // For keeping the yaml comments
     data() {
@@ -365,13 +480,16 @@ export default {
             combinedTerminalRows: COMBINED_TERMINAL_ROWS,
             combinedTerminalCols: COMBINED_TERMINAL_COLS,
             stack: {
-
+                composeOverrideYAML: "",
             },
             serviceStatusList: {},
             dockerStats: {},
+            errorDelete: false,
             isEditMode: false,
             submitted: false,
             showDeleteDialog: false,
+            deleteStackFiles: false,
+            showForceDeleteDialog: false,
             newContainerName: "",
             stopServiceStatusTimeout: false,
             stopDockerStatsTimeout: false,
@@ -474,6 +592,16 @@ export default {
             handler() {
                 if (this.editorFocus) {
                     console.debug("env code changed");
+                    this.yamlCodeChange();
+                }
+            },
+            deep: true,
+        },
+
+        "stack.composeOverrideYAML": {
+            handler() {
+                if (this.editorFocus) {
+                    console.debug("override yaml code changed");
                     this.yamlCodeChange();
                 }
             },
@@ -664,7 +792,7 @@ export default {
 
             this.bindTerminal();
 
-            this.$root.emitAgent(this.stack.endpoint, "deployStack", this.stack.name, this.stack.composeYAML, this.stack.composeENV, this.isAdd, (res) => {
+            this.$root.emitAgent(this.stack.endpoint, "deployStack", this.stack.name, this.stack.composeYAML, this.stack.composeENV, this.stack.composeOverrideYAML || "", this.isAdd, (res) => {
                 this.processing = false;
                 this.$root.toastRes(res);
 
@@ -678,7 +806,7 @@ export default {
         saveStack() {
             this.processing = true;
 
-            this.$root.emitAgent(this.stack.endpoint, "saveStack", this.stack.name, this.stack.composeYAML, this.stack.composeENV, this.isAdd, (res) => {
+            this.$root.emitAgent(this.stack.endpoint, "saveStack", this.stack.name, this.stack.composeYAML, this.stack.composeENV, this.stack.composeOverrideYAML || "", this.isAdd, (res) => {
                 this.processing = false;
                 this.$root.toastRes(res);
 
@@ -735,7 +863,18 @@ export default {
         },
 
         deleteDialog() {
-            this.$root.emitAgent(this.endpoint, "deleteStack", this.stack.name, (res) => {
+            this.$root.emitAgent(this.endpoint, "deleteStack", this.stack.name, { deleteStackFiles: this.deleteStackFiles }, (res) => {
+                this.$root.toastRes(res);
+                if (res.ok) {
+                    this.$router.push("/");
+                } else {
+                    this.errorDelete = true;
+                }
+            });
+        },
+
+        forceDeleteDialog() {
+            this.$root.emitAgent(this.endpoint, "forceDeleteStack", this.stack.name, (res) => {
                 this.$root.toastRes(res);
                 if (res.ok) {
                     this.$router.push("/");
@@ -892,6 +1031,27 @@ export default {
 .editor-box {
     font-family: 'JetBrains Mono', monospace;
     font-size: 14px;
+    &.edit-mode {
+        background-color: #2c2f38 !important;
+    }
+    position: relative;
+}
+
+.expand-button {
+    all: unset;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    z-index: 10;
+}
+
+.expand-button svg {
+    width:20px;
+    height: 20px;
+}
+
+.expand-button:hover {
+    color: white;
 }
 
 .agent-name {
