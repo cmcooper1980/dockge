@@ -20,22 +20,24 @@ export default {
     props: {
         name: {
             type: String,
-            require: true,
+            required: true,
         },
 
         endpoint: {
             type: String,
-            require: true,
+            required: true,
         },
 
         // Require if mode is interactive
         stackName: {
             type: String,
+            default: "",
         },
 
         // Require if mode is interactive
         serviceName: {
             type: String,
+            default: "",
         },
 
         // Require if mode is interactive
