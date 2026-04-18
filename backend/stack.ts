@@ -21,6 +21,26 @@ import { InteractiveTerminal, Terminal } from "./terminal";
 import childProcessAsync from "promisify-child-process";
 import { Settings } from "./settings";
 
+// For getSingleComposeStatus and general compose stack objects
+export interface ComposeStack {
+    Name: string;
+    Status: string;
+    ConfigFiles?: string;
+    [key: string]: unknown; // Allows for other dynamic properties
+}
+
+// For docker ps --format json output
+export interface DockerContainerStatus {
+    ID: string;
+    Image: string;
+    Command: string;
+    CreatedAt: string;
+    RunningFor: string;
+    Status: string; // e.g., "exited (0) 2 hours ago"
+    Ports: string;
+    Names: string;
+}
+
 export interface DeleteOptions {
     deleteStackFiles: boolean
 }
@@ -420,8 +440,8 @@ export class Stack {
     /**
      * Get the detailed status of a single compose stack, listing every container in the stack
      */
-    static async getSingleComposeStatus(composeName : string) : Promise<any[] | null> {
 
+    static async getSingleComposeStatus(composeName : string) : Promise<DockerContainerStatus[] | null> {
         let res = await childProcessAsync.spawn("docker", [ "ps", "-a", "--filter", `label=com.docker.compose.project=${composeName}`, "--format", "json" ], {
             encoding: "utf-8",
         });
@@ -429,17 +449,20 @@ export class Stack {
         if (!res.stdout) {
             return null;
         }
+
         let dockerResponse = res.stdout.toString();
-        let composeList;
         try {
-            composeList = JSON.parse(dockerResponse);
+            const output = dockerResponse.trim();
+            if (!output) {
+                return null;
+            }
+
+            // Handle newline-delimited JSON objects
+            return output.split("\n").map(line => JSON.parse(line));
         } catch (error) {
-            // Optional: Log the error for debugging purposes
-            console.error("Failed to parse JSON from res.stdout: ", res.dockerResponse);
+            console.error("Failed to parse JSON:", error);
             return null;
         }
-
-        return composeList;
     }
 
     /**
@@ -447,35 +470,32 @@ export class Stack {
      * First, we need to get the number of containers that are in the exited state
      * Then read all the containers and check if they are exited with status 0 (OK) or something else (Not OK)
      */
-    static async isComposeExitClean(composeStack : any[]) : Promise<number> {
-        const expectedContainersExited = parseInt(composeStack.Status.split("(")[1].split(")")[0]);
+
+    static async isComposeExitClean(composeStack : ComposeStack) : Promise<number> {
+        // Safer parsing with regex to avoid crashes on unexpected status strings
+        const match = composeStack.Status.match(/\((\d+)\)/);
+        const expectedContainersExited = match ? parseInt(match[1]) : 0;
+
         let cleanlyExitedContainerCount = 0;
+        const composeStatus = await this.getSingleComposeStatus(composeStack.Name);
 
-        let composeStatus = await this.getSingleComposeStatus(composeStack.Name);
-
-        if (composeStatus === null) {
+        if (!composeStatus) {
             return EXITED;
         }
-        if (!(typeof composeStatus[Symbol.iterator] === "function")) {
-            composeStatus = [ composeStatus ];
-        }
-        for (const containerStatus of composeStatus) {
-            const status = containerStatus.Status.trim();
 
-            if (status.startsWith("exited", 0)) {
-                if (status.startsWith("exited (0)", 0)) {
+        const statusArray = Array.isArray(composeStatus) ? composeStatus : [ composeStatus ];
+
+        for (const containerStatus of statusArray) {
+            const status = containerStatus.Status.toLowerCase(); // case-insensitive
+            if (status.includes("exited")) {
+                if (status.includes("exited (0)")) {
                     cleanlyExitedContainerCount++;
                 } else {
-                    return EXITED;
+                    return EXITED; // Non-zero exit code found
                 }
             }
         }
-
-        if (cleanlyExitedContainerCount == expectedContainersExited) {
-            return RUNNING;
-        }
-
-        return EXITED;
+        return (cleanlyExitedContainerCount === expectedContainersExited) ? RUNNING : EXITED;
     }
 
     /**
@@ -483,7 +503,7 @@ export class Stack {
      * Input Example: "exited(1), running(1)"
      * @param status
      */
-    static async statusConvert(composeStack : any[]) : Promise<number> {
+    static async statusConvert(composeStack : ComposeStack) : Promise<number> {
         if (composeStack.Status.startsWith("created")) {
             return CREATED_STACK;
         } else if (composeStack.Status.includes("exited")) {

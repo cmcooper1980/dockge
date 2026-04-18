@@ -3,8 +3,10 @@
         <div class="list-header">
             <div class="header-top">
                 <!-- TODO -->
-                <button v-if="false" class="btn btn-outline-normal ms-2" :class="{ 'active': selectMode }" type="button"
-                    @click="selectMode = !selectMode">
+                <button
+                    v-if="false" class="btn btn-outline-normal ms-2" :class="{ 'active': selectMode }" type="button"
+                    @click="selectMode = !selectMode"
+                >
                     {{ $t("Select") }}
                 </button>
 
@@ -57,10 +59,12 @@
                 <router-link to="/compose">{{ $t("addFirstStackMsg") }}</router-link>
             </div>
 
-            <div class="stack-list-inner" v-for="(agent, index) in agentStackList" :key="index">
-                <div v-if="$root.agentCount > 1"
-                     class="p-2 agent-select"
-                     @click="closedAgents.set(agent.endpoint, !closedAgents.get(agent.endpoint))">
+            <div v-for="(agent, index) in agentStackList" :key="index" class="stack-list-inner">
+                <div
+                    v-if="$root.agentCount > 1"
+                    class="p-2 agent-select"
+                    @click="closedAgents.set(agent.endpoint, !closedAgents.get(agent.endpoint))"
+                >
                     <span class="me-1">
                         <font-awesome-icon v-show="closedAgents.get(agent.endpoint)" icon="chevron-circle-right" />
                         <font-awesome-icon v-show="!closedAgents.get(agent.endpoint)" icon="chevron-circle-down" />
@@ -70,8 +74,8 @@
                 </div>
 
                 <StackListItem
-                    v-show="$root.agentCount === 1 || !closedAgents.get(agent.endpoint)"
                     v-for="(item, i) in agent.stacks"
+                    v-show="$root.agentCount === 1 || !closedAgents.get(agent.endpoint)"
                     :key="i"
                     :stack="item"
                     :isSelectMode="selectMode"
@@ -94,7 +98,8 @@ import StackListItem from "../components/StackListItem.vue";
 import { CREATED_FILE, CREATED_STACK, EXITED, RUNNING, UNKNOWN } from "../../../common/util-common";
 
 export default {
-    components: { Confirm, StackListItem },
+    components: { Confirm,
+        StackListItem },
     props: {
         scrollbar: { type: Boolean },
     },
@@ -106,7 +111,9 @@ export default {
             disableSelectAllWatcher: false,
             selectedStacks: {},
             windowTop: 0,
-            filterState: { status: null, active: null, tags: null },
+            filterState: { status: null,
+                active: null,
+                tags: null },
             closedAgents: new Map(),
             processing: false,
         };
@@ -157,20 +164,44 @@ export default {
 
             // sort
             result.sort((m1, m2) => {
-                if (m1.isManagedByDockge && !m2.isManagedByDockge) return -1;
-                if (!m1.isManagedByDockge && m2.isManagedByDockge) return 1;
+                if (m1.isManagedByDockge && !m2.isManagedByDockge) {
+                    return -1;
+                }
+                if (!m1.isManagedByDockge && m2.isManagedByDockge) {
+                    return 1;
+                }
 
                 if (m1.status !== m2.status) {
-                    if (m2.status === RUNNING) return 1;
-                    if (m1.status === RUNNING) return -1;
-                    if (m2.status === EXITED) return 1;
-                    if (m1.status === EXITED) return -1;
-                    if (m2.status === CREATED_STACK) return 1;
-                    if (m1.status === CREATED_STACK) return -1;
-                    if (m2.status === CREATED_FILE) return 1;
-                    if (m1.status === CREATED_FILE) return -1;
-                    if (m2.status === UNKNOWN) return 1;
-                    if (m1.status === UNKNOWN) return -1;
+                    if (m2.status === RUNNING) {
+                        return 1;
+                    }
+                    if (m1.status === RUNNING) {
+                        return -1;
+                    }
+                    if (m2.status === EXITED) {
+                        return 1;
+                    }
+                    if (m1.status === EXITED) {
+                        return -1;
+                    }
+                    if (m2.status === CREATED_STACK) {
+                        return 1;
+                    }
+                    if (m1.status === CREATED_STACK) {
+                        return -1;
+                    }
+                    if (m2.status === CREATED_FILE) {
+                        return 1;
+                    }
+                    if (m1.status === CREATED_FILE) {
+                        return -1;
+                    }
+                    if (m2.status === UNKNOWN) {
+                        return 1;
+                    }
+                    if (m1.status === UNKNOWN) {
+                        return -1;
+                    }
                 }
                 return m1.name.localeCompare(m2.name);
             });
@@ -178,16 +209,23 @@ export default {
             // group by endpoint with 'current' first, others alphabetical
             const groups = [
                 ...result.reduce((acc, stack) => {
-                    const endpoint = stack.endpoint || 'current';
-                    if (!acc.has(endpoint)) acc.set(endpoint, []);
+                    const endpoint = stack.endpoint || "current";
+                    if (!acc.has(endpoint)) {
+                        acc.set(endpoint, []);
+                    }
                     acc.get(endpoint).push(stack);
                     return acc;
                 }, new Map()).entries()
-            ].map(([endpoint, stacks]) => ({ endpoint, stacks }));
+            ].map(([ endpoint, stacks ]) => ({ endpoint,
+                stacks }));
 
             groups.sort((a, b) => {
-                if (a.endpoint === 'current' && b.endpoint !== 'current') return -1;
-                if (a.endpoint !== 'current' && b.endpoint === 'current') return 1;
+                if (a.endpoint === "current" && b.endpoint !== "current") {
+                    return -1;
+                }
+                if (a.endpoint !== "current" && b.endpoint === "current") {
+                    return 1;
+                }
                 return a.endpoint.localeCompare(b.endpoint);
             });
 
@@ -202,7 +240,9 @@ export default {
         },
         stackListStyle() {
             let listHeaderHeight = 60;
-            if (this.selectMode) listHeaderHeight += 42;
+            if (this.selectMode) {
+                listHeaderHeight += 42;
+            }
             return { height: `calc(100% - ${listHeaderHeight}px)` };
         },
         selectedStackCount() {

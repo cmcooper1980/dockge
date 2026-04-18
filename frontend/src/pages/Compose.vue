@@ -67,8 +67,8 @@
 
             <!-- URLs -->
             <div v-if="urls.length > 0" class="mb-3">
-                <a v-for="(url, index) in urls" :key="index" target="_blank" :href="url.url">
-                    <span class="badge bg-secondary me-2">{{ url.display }}</span>
+                <a v-for="(urlItem, index) in urls" :key="index" target="_blank" :href="urlItem.url">
+                    <span class="badge bg-secondary me-2">{{ urlItem.display }}</span>
                 </a>
             </div>
 
@@ -102,8 +102,8 @@
                             <div class="mt-3">
                                 <label for="name" class="form-label">{{ $t("dockgeAgent") }}</label>
                                 <select v-model="stack.endpoint" class="form-select">
-                                    <option v-for="(agent, endpoint) in $root.agentList" :key="endpoint" :value="endpoint" :disabled="$root.agentStatusList[endpoint] != 'online'">
-                                        ({{ $root.agentStatusList[endpoint] }}) {{ (agent.name !== '') ? agent.name : agent.url || $t("Current") }}
+                                    <option v-for="(agent, agentEndpoint) in $root.agentList" :key="agentEndpoint" :value="agentEndpoint" :disabled="$root.agentStatusList[agentEndpoint] != 'online'">
+                                        ({{ $root.agentStatusList[agentEndpoint] }}) {{ (agent.name !== '') ? agent.name : agent.url || $t("Current") }}
                                     </option>
                                 </select>
                             </div>
@@ -173,34 +173,13 @@
                 <div class="col-lg-6">
                     <!-- Override YAML editor (only show if file exists) -->
                     <div v-if="stack.composeOverrideYAML && stack.composeOverrideYAML.trim() !== ''">
-                    <h4 class="mb-3">{{ stack.composeOverrideFileName || 'compose.override.yaml' }}</h4>
-                    <div class="shadow-box mb-3 editor-box" :class="{'edit-mode' : isEditMode}">
-                        <button v-if="isEditMode" v-b-modal.compose-override-editor-modal class="expand-button">
-                            <font-awesome-icon icon="expand" />
-                        </button>
-                        <code-mirror
-                            ref="overrideEditor"
-                            v-model="stack.composeOverrideYAML"
-                            :extensions="extensions"
-                            minimal
-                            wrap="true"
-                            dark="true"
-                            tab="true"
-                            :disabled="!isEditMode"
-                            :hasFocus="editorFocus"
-                            @change="yamlCodeChange"
-                        />
-                    </div>
-                    <div v-if="isEditMode" class="mb-3">
-                        {{ yamlError }}
-                    </div>
-
-                    <!-- Override modal fullscreen editor (CodeMirror) -->
-                    <BModal id="compose-override-editor-modal" :title="stack.composeOverrideFileName || 'compose.override.yaml'"
-scrollable size="fullscreen" hide-footer>
+                        <h4 class="mb-3">{{ stack.composeOverrideFileName || 'compose.override.yaml' }}</h4>
                         <div class="shadow-box mb-3 editor-box" :class="{'edit-mode' : isEditMode}">
+                            <button v-if="isEditMode" v-b-modal.compose-override-editor-modal class="expand-button">
+                                <font-awesome-icon icon="expand" />
+                            </button>
                             <code-mirror
-                                ref="editor"
+                                ref="overrideEditor"
                                 v-model="stack.composeOverrideYAML"
                                 :extensions="extensions"
                                 minimal
@@ -215,8 +194,30 @@ scrollable size="fullscreen" hide-footer>
                         <div v-if="isEditMode" class="mb-3">
                             {{ yamlError }}
                         </div>
-                    </BModal>
 
+                        <!-- Override modal fullscreen editor (CodeMirror) -->
+                        <BModal
+                            id="compose-override-editor-modal" :title="stack.composeOverrideFileName || 'compose.override.yaml'"
+                            scrollable size="fullscreen" hide-footer
+                        >
+                            <div class="shadow-box mb-3 editor-box" :class="{'edit-mode' : isEditMode}">
+                                <code-mirror
+                                    ref="editor"
+                                    v-model="stack.composeOverrideYAML"
+                                    :extensions="extensions"
+                                    minimal
+                                    wrap="true"
+                                    dark="true"
+                                    tab="true"
+                                    :disabled="!isEditMode"
+                                    :hasFocus="editorFocus"
+                                    @change="yamlCodeChange"
+                                />
+                            </div>
+                            <div v-if="isEditMode" class="mb-3">
+                                {{ yamlError }}
+                            </div>
+                        </BModal>
                     </div>
 
                     <h4 class="mb-3">{{ stack.composeFileName }}</h4>
@@ -263,7 +264,6 @@ scrollable size="fullscreen" hide-footer>
                             {{ yamlError }}
                         </div>
                     </BModal>
-
 
                     <!-- ENV editor -->
                     <div v-if="isEditMode">
@@ -424,7 +424,7 @@ const variableHighlight = ViewPlugin.fromClass(class {
 }, {
     decorations: v => v.decorations
 });
-    
+
 export default {
     components: {
         NetworkInput,
