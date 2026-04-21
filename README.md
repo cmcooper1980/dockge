@@ -53,38 +53,38 @@ View Video: https://youtu.be/AWAlOQeNpgU?t=48
 ![](https://github.com/louislam/dockge/assets/1336778/89fc1023-b069-42c0-a01c-918c495f1a6a)
 
 ## ⭐ Pull Requests Merged:
-- PR  #23: Compose override editor (by https://github.com/eliasfloreteng)
-- PR #387: Global.env editor and usage in docker operations (by: https://github.com/syko9000)
-- PR #414: Set/Update Friendly Name (by https://github.com/lohrbini)
-- PR #575: Theme Options Enabled in Settings (by https://github.com/CampaniaGuy)
-- PR #582: Remove logging of terminal buffer to console (by https://github.com/black-dragon74)
-- PR #593: Group stacks by its agent (by https://github.com/ESPGranEdu)
-- PR #634: Build Frontend During Docker Build (by https://github.com/Jamie-)
-- PR #637: Implement RIGHT and LEFT KEYS terminal navigation (by https://github.com/lukasondrejka)
-- PR #649: Add Container Control Buttons (by https://github.com/mizady)
-- PR #700: Add Resource Usage Stats (by https://github.com/justwiebe)
-- PR #714: Conditional stack files deletion (by: https://github.com/husa)
-- PR #724: Adds force delete button when the delete option has failed (by: https://github.com/DomiiBunn)
-- PR #730: Add an Update All Button (by https://github.com/DomiiBunn)
-- PR #785: Add Cloudflare Turnstile captcha (by https://github.com/Kambaa)
-- PR #786: Replace editor with Codemirror (by https://github.com/andersmmg)
-- PR #800: Improved stack list ui when using agents (by https://github.com/maca134)
-    - with QOL Commit `ef7225a` (by https://github.com/Dracrius)
-- PR #813: Fix "Exited" Status when Expected (by https://github.com/Aymendje)
-- PR #822: Add clipboard copy/paste support to terminal component (by https://github.com/Dimariqe)  
+- PR  #[23](https://github.com/louislam/dockge/pull/23) Compose override editor (by [eliasfloreteng](https://github.com/eliasfloreteng))
+- PR #[387](https://github.com/louislam/dockge/pull/387) Global.env editor and usage in docker operations (by [syko9000](https://github.com/syko9000))
+- PR #[414](https://github.com/louislam/dockge/pull/414) Set/Update Friendly Name (by [lohrbini](https://github.com/lohrbini))
+- PR #[575](https://github.com/louislam/dockge/pull/575) Theme Options Enabled in Settings (by [CampaniaGuy](https://github.com/CampaniaGuy))
+- PR #[582](https://github.com/louislam/dockge/pull/582) Remove logging of terminal buffer to console (by [black-dragon74](https://github.com/black-dragon74))
+- PR #[593](https://github.com/louislam/dockge/pull/593) Group stacks by [](its agent (by [ESPGranEdu](https://github.com/ESPGranEdu))
+- PR #[634](https://github.com/louislam/dockge/pull/634) Build Frontend During Docker Build (by [Jamie-](https://github.com/Jamie-))
+- PR #[637](https://github.com/louislam/dockge/pull/637) Implement RIGHT and LEFT KEYS terminal navigation (by [lukasondrejka](https://github.com/lukasondrejka))
+- PR #[649](https://github.com/louislam/dockge/pull/649) Add Container Control Buttons (by [mizady](https://github.com/mizady))
+- PR #[700](https://github.com/louislam/dockge/pull/700) Add Resource Usage Stats (by [justwiebe](https://github.com/justwiebe))
+- PR #[714](https://github.com/louislam/dockge/pull/714) Conditional stack files deletion (by [husa](https://github.com/husa))
+- PR #[724](https://github.com/louislam/dockge/pull/724) Adds force delete button when the delete option has failed (by [DomiiBunn](https://github.com/DomiiBunn))
+- PR #[730](https://github.com/louislam/dockge/pull/730) Add an Update All Button (by [DomiiBunn](https://github.com/DomiiBunn))
+- PR #[785](https://github.com/louislam/dockge/pull/785) Add Cloudflare Turnstile captcha (by [Kambaa](https://github.com/Kambaa))
+- PR #[786](https://github.com/louislam/dockge/pull/786) Replace editor with Codemirror (by [andersmmg](https://github.com/andersmmg))
+- PR #[800](https://github.com/louislam/dockge/pull/800) Improved stack list ui when using agents (by [maca134](https://github.com/maca134))
+    - with QOL Commit [ef7225a](https://github.com/louislam/dockge/commit/ef7225a333225d17d3fc92852226989973ec5aee) (by [Dracrius](https://github.com/Dracrius))
+- PR #[813](https://github.com/louislam/dockge/pull/813) Fix "Exited" Status when Expected (by [Aymendje](https://github.com/Aymendje))
+- PR #[822](https://github.com/louislam/dockge/pull/822) Add clipboard copy/paste support to terminal component (by [Dimariqe](https://github.com/Dimariqe))  
 	- be sure to allow the permission in the browser to take effect
-- PR #827: Fullscreen yaml editor (by https://github.com/Joshua-Beatty)
-- PR #834: Add prune image on update process (by https://github.com/MazziaRick)
-- PR #863: Add Docker Images Management Feature (by https://github.com/felix068)
-	- Currently under `feature/image-management` branch use docker tag: `image-management`  
+- PR #[827](https://github.com/louislam/dockge/pull/827) Fullscreen yaml editor (by [Joshua-Beatty](https://github.com/Joshua-Beatty))
+- PR #[834](https://github.com/louislam/dockge/pull/834) Add prune image on update process (by [MazziaRick](https://github.com/MazziaRick))
+- PR #[863](https://github.com/louislam/dockge/pull/863) Add Docker Images Management Feature (by [felix068](https://github.com/felix068))
+	- Currently under [feature/image-management](https://github.com/cmcooper1980/dockge/tree/feature/image-management) branch use docker tag `image-management`  
 	  to test
-- Commit `fc96f4e` (by https://github.com/Dracrius)
+- Commit [fc96f4e](https://github.com/louislam/dockge/commit/fc96f4edadcebe28eaf223c0a853261e908072a5) (by [Dracrius](https://github.com/Dracrius))
 	- switch to a button group and matched existing UI style (no more eye searing stop and restart buttons)
 	- Fixed message output to include a space after Service
 	- Added Processing prop and Start,Stop,Restart events
-- Commit `789f25a` (by https://github.com/Dracrius)
+- Commit [789f25a](https://github.com/louislam/dockge/commit/789f25a83c3eaed093f2a62e5a9477753d974524) (by [Dracrius](https://github.com/Dracrius))
 	- Hide container controls if there is only one container  
-      Final change to louislam#649 as there is no need for the container controls if there is only a single container.
+      Final change to PR #[649](https://github.com/louislam/pull/649) as there is no need for the container controls if there is only a single container.
    
 ## 🔧 How to Install
 
