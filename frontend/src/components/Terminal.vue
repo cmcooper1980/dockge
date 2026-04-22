@@ -135,7 +135,9 @@ export default {
                 }
             });
         }
-        // Fit the terminal width to the div container size after terminal is created.
+
+        // Fit the terminal width to the div container size after terminal is created
+        // and immediately notify the backend of the calculated size.
         this.updateTerminalSize();
     },
 
@@ -271,8 +273,10 @@ export default {
         /**
          * Update the terminal size to fit the container size.
          *
-         * If the terminalFitAddOn is not created, creates it, loads it and then fits the terminal to the appropriate size.
-         * It then addes an event listener to the window object to listen for resize events and calls the fit method of the terminalFitAddOn.
+         * If the terminalFitAddOn is not created, creates it, loads it and then
+         * fits the terminal to the appropriate size.
+         * It also notifies the backend immediately with the fitted rows/cols so
+         * resizing works when the terminal becomes visible in a modal.
          */
         updateTerminalSize() {
             if (!Object.hasOwn(this, "terminalFitAddOn")) {
@@ -280,16 +284,19 @@ export default {
                 this.terminal.loadAddon(this.terminalFitAddOn);
                 window.addEventListener("resize", this.onResizeEvent);
             }
+
             this.terminalFitAddOn.fit();
+
+            const rows = this.terminal.rows;
+            const cols = this.terminal.cols;
+            this.$root.emitAgent(this.endpoint, "terminalResize", this.name, rows, cols);
         },
+
         /**
          * Handles the resize event of the terminal component.
          */
         onResizeEvent() {
-            this.terminalFitAddOn.fit();
-            let rows = this.terminal.rows;
-            let cols = this.terminal.cols;
-            this.$root.emitAgent(this.endpoint, "terminalResize", this.name, rows, cols);
+            this.updateTerminalSize();
         },
 
         /**
