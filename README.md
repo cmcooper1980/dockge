@@ -58,7 +58,7 @@ View Video: https://youtu.be/AWAlOQeNpgU?t=48
 - PR #[414](https://github.com/louislam/dockge/pull/414) Set/Update Friendly Name (by [lohrbini](https://github.com/lohrbini))
 - PR #[575](https://github.com/louislam/dockge/pull/575) Theme Options Enabled in Settings (by [CampaniaGuy](https://github.com/CampaniaGuy))
 - PR #[582](https://github.com/louislam/dockge/pull/582) Remove logging of terminal buffer to console (by [black-dragon74](https://github.com/black-dragon74))
-- PR #[593](https://github.com/louislam/dockge/pull/593) Group stacks by [](its agent (by [ESPGranEdu](https://github.com/ESPGranEdu))
+- PR #[593](https://github.com/louislam/dockge/pull/593) Group stacks by its agent (by [ESPGranEdu](https://github.com/ESPGranEdu))
 - PR #[634](https://github.com/louislam/dockge/pull/634) Build Frontend During Docker Build (by [Jamie-](https://github.com/Jamie-))
 - PR #[637](https://github.com/louislam/dockge/pull/637) Implement RIGHT and LEFT KEYS terminal navigation (by [lukasondrejka](https://github.com/lukasondrejka))
 - PR #[649](https://github.com/louislam/dockge/pull/649) Add Container Control Buttons (by [mizady](https://github.com/mizady))
