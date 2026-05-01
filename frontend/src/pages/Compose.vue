@@ -158,8 +158,15 @@
 
                     <!-- Combined Terminal Output -->
                     <div v-show="!isEditMode">
-                        <h4 class="mb-3">{{ $t("terminal") }}</h4>
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h4 class="mb-0">{{ $t("terminal") }}</h4>
+                            <button class="expand-button-static" type="button" @click="openCombinedTerminalModal">
+                                <font-awesome-icon icon="expand" />
+                            </button>
+                        </div>
+
                         <Terminal
+                            v-show="!showCombinedTerminalModal"
                             ref="combinedTerminal"
                             class="mb-3 terminal"
                             :name="combinedTerminalName"
@@ -168,6 +175,28 @@
                             :cols="combinedTerminalCols"
                             style="height: 315px;"
                         ></Terminal>
+
+                        <BModal
+                            v-model="showCombinedTerminalModal"
+                            id="combined-terminal-modal"
+                            :title="$t('terminal')"
+                            scrollable
+                            size="fullscreen"
+                            hide-footer
+                            @shown="onCombinedTerminalModalShown"
+                            @hidden="onCombinedTerminalModalHidden"
+                        >
+                            <Terminal
+                                v-if="showCombinedTerminalModal"
+                                ref="combinedTerminalModal"
+                                class="terminal"
+                                :name="combinedTerminalName"
+                                :endpoint="endpoint"
+                                :rows="combinedTerminalRows"
+                                :cols="combinedTerminalCols"
+                                style="height: calc(100vh - 140px);"
+                            ></Terminal>
+                        </BModal>
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -371,7 +400,7 @@ import {
 import { BModal } from "bootstrap-vue-next";
 import NetworkInput from "../components/NetworkInput.vue";
 import dotenv from "dotenv";
-import { ref } from "vue";
+import { nextTick, ref } from "vue";
 
 const template = `
 services:
@@ -479,13 +508,14 @@ export default {
             progressTerminalRows: PROGRESS_TERMINAL_ROWS,
             combinedTerminalRows: COMBINED_TERMINAL_ROWS,
             combinedTerminalCols: COMBINED_TERMINAL_COLS,
+            showCombinedTerminalModal: false,
             stack: {
                 composeOverrideYAML: "",
             },
             serviceStatusList: {},
             dockerStats: {},
-            errorDelete: false,
             isEditMode: false,
+            errorDelete: false,
             submitted: false,
             showDeleteDialog: false,
             deleteStackFiles: false,
@@ -758,6 +788,28 @@ export default {
                     this.$root.toastRes(res);
                 }
             });
+        },
+
+        openCombinedTerminalModal() {
+            this.showCombinedTerminalModal = true;
+        },
+
+        async onCombinedTerminalModalShown() {
+            await nextTick();
+
+            setTimeout(() => {
+                this.$refs.combinedTerminalModal?.updateTerminalSize?.();
+                this.$refs.combinedTerminalModal?.bind(this.endpoint, this.combinedTerminalName);
+            }, 50);
+        },
+
+        async onCombinedTerminalModalHidden() {
+            await nextTick();
+
+            setTimeout(() => {
+                this.$refs.combinedTerminal?.updateTerminalSize?.();
+                this.$refs.combinedTerminal?.bind(this.endpoint, this.combinedTerminalName);
+            }, 50);
         },
 
         deployStack() {
@@ -1046,11 +1098,28 @@ export default {
 }
 
 .expand-button svg {
-    width:20px;
+    width: 20px;
     height: 20px;
 }
 
 .expand-button:hover {
+    color: white;
+}
+
+.expand-button-static {
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.expand-button-static svg {
+    width: 20px;
+    height: 20px;
+}
+
+.expand-button-static:hover {
     color: white;
 }
 
