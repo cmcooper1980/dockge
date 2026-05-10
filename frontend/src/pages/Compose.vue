@@ -911,6 +911,39 @@ export default {
             };
         },
 
+        /**
+         * Deep-merge two compose configurations, with values from `override`
+         * taking precedence. Plain objects are merged recursively; arrays and
+         * primitives from `override` replace those from `base`. This is a
+         * minimal approximation of docker compose's override semantics, but
+         * is sufficient for reading extension fields such as `x-dockge`.
+         * @param {object} base
+         * @param {object} override
+         * @returns {object}
+         */
+        mergeComposeConfig(base, override) {
+            const isPlainObject = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
+
+            if (!isPlainObject(base)) {
+                return override;
+            }
+            if (!isPlainObject(override)) {
+                return base;
+            }
+
+            const result = { ...base };
+            for (const key of Object.keys(override)) {
+                const baseVal = base[key];
+                const overrideVal = override[key];
+                if (isPlainObject(baseVal) && isPlainObject(overrideVal)) {
+                    result[key] = this.mergeComposeConfig(baseVal, overrideVal);
+                } else {
+                    result[key] = overrideVal;
+                }
+            }
+            return result;
+        },
+
         yamlCodeChange() {
             try {
                 let { config, doc } = this.yamlToJSON(this.stack.composeYAML);
@@ -920,7 +953,18 @@ export default {
 
                 let env = dotenv.parse(this.stack.composeENV);
                 let envYAML = envsubstYAML(this.stack.composeYAML, env);
-                this.envsubstJSONConfig = this.yamlToJSON(envYAML).config;
+                let envsubstConfig = this.yamlToJSON(envYAML).config;
+
+                // Merge compose.override.yaml so that extension fields like
+                // x-dockge (e.g. urls) defined in the override are also
+                // reflected in the UI.
+                if (this.stack.composeOverrideYAML && this.stack.composeOverrideYAML.trim() !== "") {
+                    let overrideEnvYAML = envsubstYAML(this.stack.composeOverrideYAML, env);
+                    let overrideConfig = this.yamlToJSON(overrideEnvYAML).config;
+                    envsubstConfig = this.mergeComposeConfig(envsubstConfig, overrideConfig);
+                }
+
+                this.envsubstJSONConfig = envsubstConfig;
 
                 clearTimeout(yamlErrorTimeout);
                 this.yamlError = "";
